@@ -1,6 +1,5 @@
 package exercises;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.*;
@@ -20,7 +19,6 @@ public class C_DefaultMethods {
    * in-place by appending the string "new" to each one.
    */
   @Test
-  @Ignore
   public void c01_appendNew() {
     List<StringBuilder> sbList = List.of(
         new StringBuilder("alfa"),
@@ -28,6 +26,7 @@ public class C_DefaultMethods {
         new StringBuilder("charlie"));
 
     // TODO write code to modify sbList
+    sbList.forEach(sb -> sb.append("new"));
 
     assertEquals(List.of("alfanew", "bravonew", "charlienew"),
                  sbList.stream()
@@ -44,12 +43,12 @@ public class C_DefaultMethods {
    * Remove the words that have odd lengths from the list.
    */
   @Test
-  @Ignore
   public void c02_removeOddLengthWords() {
     List<String> list = new ArrayList<>(Arrays.asList(
         "alfa", "bravo", "charlie", "delta", "echo", "foxtrot"));
 
     // TODO write code to modify list
+    list.removeIf(s -> s.length() % 2 == 1);
 
     assertEquals(List.of("alfa", "echo"), list);
   }
@@ -63,12 +62,12 @@ public class C_DefaultMethods {
    * Replace every word in the list with its upper case equivalent.
    */
   @Test
-  @Ignore
   public void c03_upcaseAllWords() {
     List<String> list = Arrays.asList(
         "alfa", "bravo", "charlie", "delta", "echo", "foxtrot");
 
     // TODO code to modify list
+    list.replaceAll(String::toUpperCase);
 
     assertEquals(List.of("ALFA", "BRAVO", "CHARLIE", "DELTA", "ECHO", "FOXTROT"),
                  list);
@@ -85,7 +84,6 @@ public class C_DefaultMethods {
    * Integer key. This should mutate each StringBuilder value in-place.
    */
   @Test
-  @Ignore
   public void c04_appendToMapValues() {
     Map<Integer, StringBuilder> map = new TreeMap<>();
     map.put(1, new StringBuilder("alfa"));
@@ -93,6 +91,7 @@ public class C_DefaultMethods {
     map.put(3, new StringBuilder("charlie"));
 
     // TODO write code to modify map
+    map.forEach((k, v) -> v.append(k));
 
     assertEquals(3, map.size());
     assertTrue(map.values().stream().allMatch(x -> x instanceof StringBuilder));
@@ -112,7 +111,6 @@ public class C_DefaultMethods {
    * Integer key.
    */
   @Test
-  @Ignore
   public void c05_replaceMapValues() {
     Map<Integer, String> map = new TreeMap<>();
     map.put(1, "alfa");
@@ -120,6 +118,7 @@ public class C_DefaultMethods {
     map.put(3, "charlie");
 
     // TODO write code to modify map
+    map.replaceAll((k, v) -> v + k);
 
     assertEquals(Map.of(1, "alfa1",
                         2, "bravo2",
@@ -137,7 +136,6 @@ public class C_DefaultMethods {
    * each word, and whose values are list of words with that length.
    */
   @Test
-  @Ignore
   public void c06_mapOfListOfStringsByLength() {
     List<String> list = List.of(
         "aardvark", "bison", "capybara",
@@ -146,6 +144,7 @@ public class C_DefaultMethods {
     Map<Integer, List<String>> result = new TreeMap<>();
 
     // TODO write code to populate result
+    list.forEach(s -> result.computeIfAbsent(s.length(), n -> new ArrayList<>()).add(s));
 
     assertEquals(Map.of(5, List.of("bison"),
                         6, List.of("avocet"),
@@ -166,7 +165,6 @@ public class C_DefaultMethods {
    * separated by a colon (':').
    */
   @Test
-  @Ignore
   public void c07_mapOfStringByInitialCharacter() {
     List<String> list = List.of(
         "aardvark", "bison", "capybara",
@@ -175,6 +173,7 @@ public class C_DefaultMethods {
     Map<Character, String> result = new TreeMap<>();
 
     // TODO write code to populate result
+    list.forEach(s -> result.merge(s.charAt(0), s, (a, b) -> a + ":" + b));
 
     assertEquals(Map.of('a', "aardvark:alligator:avocet",
                         'b', "bison:bushbaby:bustard",
@@ -194,7 +193,6 @@ public class C_DefaultMethods {
    * Write code to ensure that all missing keys are mapped to the empty string.
    */
   @Test
-  @Ignore
   public void c08_mapWithMissingValues() {
     List<String> keys = Arrays.asList("a", "b", "c", "d", "e", "f", "g");
     Map<String, String> map = new HashMap<>(Map.of("a", "alfa",
@@ -203,6 +201,7 @@ public class C_DefaultMethods {
                                                    "d", "delta"));
 
     // TODO write code to fix the map
+    keys.forEach(s -> map.putIfAbsent(s, ""));
 
     assertEquals(Map.of("a", "alfa",
                         "b", "bravo",
@@ -225,7 +224,6 @@ public class C_DefaultMethods {
    * time, we want to remove the entry if the value is the empty string.
    */
   @Test
-  @Ignore
   public void c09_mapRemoveEntriesWithEmptyValues() {
     List<String> keys = Arrays.asList("a", "b", "c", "d", "e", "f", "g");
     Map<String, String> map = new HashMap<>(Map.of("a", "alfa",
@@ -237,6 +235,7 @@ public class C_DefaultMethods {
                                                    "g", ""));
 
     // TODO write code to fix the map
+    keys.forEach(s -> map.remove(s, ""));
 
     assertEquals(Map.of("a", "alfa",
                         "b", "bravo",
@@ -257,7 +256,6 @@ public class C_DefaultMethods {
    * Write the code to do that.
    */
   @Test
-  @Ignore
   public void c10_mapReplaceEmptyValues() {
     List<String> keys = Arrays.asList("a", "b", "c", "d", "e", "f", "g");
     Map<String, String> map = new HashMap<>(Map.of("a", "alfa",
@@ -269,6 +267,7 @@ public class C_DefaultMethods {
                                                    "g", ""));
 
     // TODO write code to fix the map
+    keys.forEach(s -> map.replace(s, "", s));
 
     assertEquals(Map.of("a", "alfa",
                         "b", "bravo",
@@ -292,7 +291,6 @@ public class C_DefaultMethods {
    * same as the key.
    */
   @Test
-  @Ignore
   public void c11_computeWithMissingEntries() {
     List<String> keys = Arrays.asList("a", "b", "c", "d", "e", "f", "g");
     Map<String, String> map = new HashMap<>(Map.of("a", "alfa",
@@ -301,6 +299,7 @@ public class C_DefaultMethods {
                                                    "d", "delta"));
 
     // TODO write code transform the map
+    keys.forEach(s -> map.merge(s, s, (old, x) -> old.toUpperCase()));
 
     assertEquals(Map.of("a", "ALFA",
                         "b", "BRAVO",
@@ -325,7 +324,6 @@ public class C_DefaultMethods {
    * for which the values are the empty string.
    */
   @Test
-  @Ignore
   public void c12_computeAndRemoveSomeEntries() {
     List<String> keys = Arrays.asList("a", "b", "c", "d", "e", "f", "g");
     Map<String, String> map = new HashMap<>(Map.of("a", "alfa",
@@ -337,6 +335,9 @@ public class C_DefaultMethods {
                                                    "g", ""));
 
     // TODO write code transform the map
+//    keys.forEach(s -> map.compute(s, (k, v) -> v.isEmpty() ? null : v.toUpperCase()));
+    keys.forEach(s -> map.computeIfPresent(s, (k, v) -> v.isEmpty() ? null : v.toUpperCase()));
+    // Note: `computeIfPresent` ensures value `v` in remapping function is non-null
 
     assertEquals(Map.of("a", "ALFA",
                         "b", "BRAVO",

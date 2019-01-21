@@ -1,6 +1,5 @@
 package exercises;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -23,9 +22,8 @@ public class A_Lambdas {
    * that tests whether a string is longer than four characters.
    */
   @Test
-  @Ignore
   public void a_predicate1() {
-    Predicate<String> pred = null; // TODO
+    Predicate<String> pred = s -> s.length() > 4; // TODO
 
     assertTrue(pred.test("abcde"));
     assertFalse(pred.test("abcd"));
@@ -36,9 +34,8 @@ public class A_Lambdas {
    * that tests whether a string is empty.
    */
   @Test
-  @Ignore
   public void a_predicate2() {
-    Predicate<String> pred = null; // TODO
+    Predicate<String> pred = s -> s.isEmpty(); // TODO
 
     assertTrue(pred.test(""));
     assertFalse(pred.test("a"));
@@ -53,32 +50,23 @@ public class A_Lambdas {
    * classname::methodname
    */
   @Test
-  @Ignore
   public void a_predicate3() {
-    Predicate<String> pred = null; // TODO
+    Predicate<String> pred = String::isEmpty; // TODO
 
     assertTrue(pred.test(""));
     assertFalse(pred.test("a"));
   }
-  // Hint:
-  // <editor-fold defaultstate="collapsed">
-  // Copy the lambda expression from the previous exercise and then pop
-  // up the menu over the "light bulb" icon in the left margin. This menu
-  // has an option to convert the lambda to a method reference. (The exact
-  // gesture will vary among IDEs.)
-  // </editor-fold>
 
   /**
    * Create a predicate that returns true if both predicates
    * startsWithJ and lengthIs7 hold.
    */
   @Test
-  @Ignore
   public void a_predicate4() {
     Predicate<String> startsWithJ = s -> s.startsWith("J");
     Predicate<String> lengthIs7 = s -> s.length() == 7;
 
-    Predicate<String> startsWithJAndLengthIs7 = null; // TODO
+    Predicate<String> startsWithJAndLengthIs7 = startsWithJ.and(lengthIs7); // TODO
 
     assertFalse(startsWithJAndLengthIs7.test("Hello"));
     assertFalse(startsWithJAndLengthIs7.test("HelloJ1"));
@@ -95,13 +83,12 @@ public class A_Lambdas {
    * is 9 or the provided string equals ERROR.
    */
   @Test
-  @Ignore
   public void a_predicate5() {
     Predicate<String> lengthIs9 = s -> s.length() == 9;
     Predicate<String> equalsError = "ERROR"::equals;
     // Note: this could also be: Predicate.isEqual("ERROR")
 
-    Predicate<String> lengthIs9orError = null; // TODO
+    Predicate<String> lengthIs9orError = lengthIs9.or(equalsError); // TODO
 
     assertFalse(lengthIs9orError.test("Hello"));
     assertTrue(lengthIs9orError.test("Hello J1!"));
@@ -118,9 +105,8 @@ public class A_Lambdas {
    * string in parentheses.
    */
   @Test
-  @Ignore
   public void b_function1() {
-    Function<String, String> func = null; // TODO
+    Function<String, String> func = s -> "(" + s + ")"; // TODO
 
     assertEquals("(abc)", func.apply("abc"));
   }
@@ -130,9 +116,8 @@ public class A_Lambdas {
    * given string to upper case.
    */
   @Test
-  @Ignore
   public void b_function2() {
-    Function<String, String> func = null; // TODO
+    Function<String, String> func = s -> s.toUpperCase(); // TODO
 
     assertEquals("ABC", func.apply("abc"));
   }
@@ -142,9 +127,8 @@ public class A_Lambdas {
    * given string to upper case.
    */
   @Test
-  @Ignore
   public void b_function3() {
-    Function<String, String> func = null; // TODO
+    Function<String, String> func = String::toUpperCase; // TODO
 
     assertEquals("ABC", func.apply("abc"));
   }
@@ -156,30 +140,24 @@ public class A_Lambdas {
    * string's length.
    */
   @Test
-  @Ignore
   public void b_function4() {
     Function<String, String> unNullify = s -> s == null ? "" : s;
     Function<String, Integer> length = String::length;
 
-    Function<String, Integer> lengthBis = null; // TODO
+    Function<String, Integer> lengthBis = unNullify.andThen(length); // TODO
 
     assertEquals((Integer) 14, lengthBis.apply("Hello JavaOne!"));
     assertEquals((Integer) 0, lengthBis.apply(""));
     assertEquals((Integer) 0, lengthBis.apply(null));
   }
-  // Hint:
-  // <editor-fold defaultstate="collapsed">
-  // See java.util.Function.andThen() or java.util.Function.compose()
-  // </editor-fold>
 
   /**
    * Write a lambda expression that appends the
    * string "abc" to the given StringBuilder.
    */
   @Test
-  @Ignore
   public void c_consumer1() {
-    Consumer<StringBuilder> cons = null; // TODO
+    Consumer<StringBuilder> cons = sb -> sb.append("abc"); // TODO
 
     StringBuilder sb = new StringBuilder("xyz");
     cons.accept(sb);
@@ -190,9 +168,8 @@ public class A_Lambdas {
    * Write a lambda expression that clears the given list.
    */
   @Test
-  @Ignore
   public void c_consumer2() {
-    Consumer<List<String>> cons = null; // TODO
+    Consumer<List<String>> cons = List::clear; // TODO
 
     List<String> list = new ArrayList<>(List.of("a", "b", "c"));
     cons.accept(list);
@@ -203,9 +180,8 @@ public class A_Lambdas {
    * Write an unbound method reference that clears the given list.
    */
   @Test
-  @Ignore
   public void c_consumer3() {
-    Consumer<List<String>> cons = null; // TODO
+    Consumer<List<String>> cons = List::clear; // TODO
 
     List<String> list = new ArrayList<>(List.of("a", "b", "c"));
     cons.accept(list);
@@ -217,30 +193,24 @@ public class A_Lambdas {
    * first consumer, then to the second.
    */
   @Test
-  @Ignore
   public void c_consumer4() {
     Consumer<List<String>> c1 = list -> list.add("first");
     Consumer<List<String>> c2 = list -> list.add("second");
 
-    Consumer<List<String>> consumer = null; // TODO
+    Consumer<List<String>> consumer = c1.andThen(c2); // TODO
 
     List<String> list = new ArrayList<>(List.of("a", "b", "c"));
     consumer.accept(list);
     assertEquals(List.of("a", "b", "c", "first", "second"), list);
   }
-  // Hint:
-  // <editor-fold defaultstate="collapsed">
-  // see java.util.function.Consumer.andThen()
-  // </editor-fold>
 
   /**
    * Write a lambda expression that returns a new StringBuilder
    * containing the string "abc".
    */
   @Test
-  @Ignore
   public void d_supplier1() {
-    Supplier<StringBuilder> sup = null; // TODO
+    Supplier<StringBuilder> sup = () -> new StringBuilder("abc"); // TODO
 
     assertEquals("abc", sup.get().toString());
   }
@@ -249,9 +219,8 @@ public class A_Lambdas {
    * Write a lambda expression that returns a new, empty StringBuilder.
    */
   @Test
-  @Ignore
   public void d_supplier2() {
-    Supplier<StringBuilder> sup = null; // TODO
+    Supplier<StringBuilder> sup = StringBuilder::new; // TODO
 
     assertEquals("", sup.get().toString());
   }
@@ -260,9 +229,8 @@ public class A_Lambdas {
    * Write a constructor reference that returns a new, empty StringBuilder.
    */
   @Test
-  @Ignore
   public void d_supplier3() {
-    Supplier<StringBuilder> sup = null; // TODO
+    Supplier<StringBuilder> sup = StringBuilder::new; // TODO
 
     assertEquals("", sup.get().toString());
   }
@@ -273,9 +241,8 @@ public class A_Lambdas {
    * first again.
    */
   @Test
-  @Ignore
   public void e_bifunction1() {
-    BiFunction<String, String, String> bifunc = null; // TODO
+    BiFunction<String, String, String> bifunc = (a, b) -> a + b + a; // TODO
 
     assertEquals("FirstSecondFirst", bifunc.apply("First", "Second"));
   }
@@ -286,21 +253,12 @@ public class A_Lambdas {
    * or -1 if the second string doesn't occur within the first string.
    */
   @Test
-  @Ignore
   public void e_bifunction2() {
-    BiFunction<String, String, Integer> bifunc = null; // TODO
+    BiFunction<String, String, Integer> bifunc = String::indexOf; // TODO
 
     assertEquals(3, bifunc.apply("abcdefghi", "def").intValue());
     assertEquals(-1, bifunc.apply("abcdefghi", "xyz").intValue());
   }
-  // Hint:
-  // <editor-fold defaultstate="collapsed">
-  // The String method
-  //     public int indexOf(String)
-  // works as a BiFunction, because the receiver (a String instance)
-  // counts as the first argument. The argument to indexOf() becomes
-  // the second argument to the BiFunction.
-  // </editor-fold>
 
   /**
    * Write an unbound method reference that returns the index of
@@ -308,9 +266,8 @@ public class A_Lambdas {
    * or -1 if the second string doesn't occur within the first string.
    */
   @Test
-  @Ignore
   public void e_bifunction3() {
-    BiFunction<String, String, Integer> bifunc = null; // TODO
+    BiFunction<String, String, Integer> bifunc = String::indexOf; // TODO
 
     assertEquals(3, bifunc.apply("abcdefghij", "def").intValue());
     assertEquals(-1, bifunc.apply("abcdefghij", "xyz").intValue());
@@ -334,12 +291,11 @@ public class A_Lambdas {
    * variable (a String) to the sb variable (a StringBuilder).
    */
   @Test
-  @Ignore
   public void f_runnable1() {
     StringBuilder sb = new StringBuilder("abc");
     String suffix = "xyz";
 
-    Runnable r = null; // TODO
+    Runnable r = () -> sb.append(suffix); // TODO
 
     r.run();
     r.run();
@@ -354,18 +310,13 @@ public class A_Lambdas {
    * doesn't occur.
    */
   @Test
-  @Ignore
   public void g_boundMethodRef1() {
-    Function<String, Integer> func = null; // TODO
+    Function<String, Integer> func = "abcdefghij"::indexOf; // TODO
 
     assertEquals(2, func.apply("cde").intValue());
     assertEquals(4, func.apply("efg").intValue());
     assertEquals(-1, func.apply("xyz").intValue());
   }
-  // Hint:
-  // <editor-fold defaultstate="collapsed">
-  // Call the indexOf() method on a string literal.
-  // </editor-fold>
 
   /**
    * Write a bound method reference that takes a string argument
@@ -381,16 +332,11 @@ public class A_Lambdas {
    * a classname on the left-hand side of the :: operator.
    */
   @Test
-  @Ignore
   public void g_boundMethodRef2() {
-    Function<String, Integer> func = null; // TODO
+    Function<String, Integer> func = "abcdefghij"::indexOf; // TODO
 
     assertEquals(2, func.apply("cde").intValue());
     assertEquals(4, func.apply("efg").intValue());
     assertEquals(-1, func.apply("xyz").intValue());
   }
-  // Hint:
-  // <editor-fold defaultstate="collapsed">
-  // Place a string literal on the left-hand side of the :: operator.
-  // </editor-fold>
 }
