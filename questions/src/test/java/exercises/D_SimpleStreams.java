@@ -1,17 +1,18 @@
 package exercises;
 
+import com.google.common.io.CharSource;
+import com.google.common.io.Resources;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.net.URL;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.Assert.assertEquals;
 
 /**
@@ -27,12 +28,14 @@ public class D_SimpleStreams {
    * only the odd-length words, converted to upper case.
    */
   @Test
-  @Ignore
   public void d1_upcaseOddLengthWords() {
     List<String> input = List.of(
         "alfa", "bravo", "charlie", "delta", "echo", "foxtrot");
 
-    List<String> result = null; // TODO
+    List<String> result = input.stream()
+            .filter(s -> s.length() % 2 == 1)
+            .map(String::toUpperCase)
+            .collect(Collectors.toList());
 
     assertEquals(List.of("BRAVO", "CHARLIE", "DELTA", "FOXTROT"), result);
   }
@@ -53,7 +56,6 @@ public class D_SimpleStreams {
    * into a single string. Watch for off-by-one errors.
    */
   @Test
-  @Ignore
   public void d2_joinStreamRange() {
     List<String> input = List.of(
         "alfa", "bravo", "charlie", "delta", "echo", "foxtrot");
@@ -80,7 +82,6 @@ public class D_SimpleStreams {
    * @throws IOException
    */
   @Test
-  @Ignore
   public void d3_countLinesInFile() throws IOException {
     long count = 0; // TODO
 
@@ -102,7 +103,6 @@ public class D_SimpleStreams {
    * @throws IOException
    */
   @Test
-  @Ignore
   public void d4_findLengthOfLongestLine() throws IOException {
     int longestLength = 0; // TODO
 
@@ -129,7 +129,6 @@ public class D_SimpleStreams {
    * @throws IOException
    */
   @Test
-  @Ignore
   public void d5_findLongestLine() throws IOException {
     String longest = null; // TODO
 
@@ -150,7 +149,6 @@ public class D_SimpleStreams {
    * whose lengths are equal to the maximum word length.
    */
   @Test
-  @Ignore
   public void d6_selectLongestWords() {
     List<String> input = List.of(
         "alfa", "bravo", "charlie", "delta", "echo", "foxtrot", "golf", "hotel");
@@ -169,7 +167,6 @@ public class D_SimpleStreams {
    * the word's position in the list (starting from zero) .
    */
   @Test
-  @Ignore
   public void d7_selectByLengthAndPosition() {
     List<String> input = List.of(
         "alfa", "bravo", "charlie", "delta", "echo", "foxtrot", "golf", "hotel");
@@ -195,8 +192,9 @@ public class D_SimpleStreams {
 
   @Before
   public void z_setUpBufferedReader() throws IOException {
-    reader = Files.newBufferedReader(
-        Paths.get("SonnetI.txt"), StandardCharsets.UTF_8);
+    URL url = Resources.getResource("SonnetI.txt");
+    CharSource charSource = Resources.asCharSource(url, UTF_8);
+    reader = charSource.openBufferedStream();
   }
 
   @After
