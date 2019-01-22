@@ -1,12 +1,12 @@
 package exercises;
 
+import com.google.common.io.Resources;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.Set;
 import java.util.regex.Pattern;
 
@@ -120,7 +120,7 @@ public class G_MatcherScanner {
 
   @Before
   public void z_readFileIntoString() throws IOException {
-    SONNET = new String(Files.readAllBytes(Paths.get("SonnetI.txt")),
-                        StandardCharsets.UTF_8);
+    URL url = Resources.getResource("SonnetI.txt");
+    SONNET = Resources.toString(url, StandardCharsets.UTF_8);
   }
 }

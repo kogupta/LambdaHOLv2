@@ -12,9 +12,11 @@ import java.math.BigInteger;
 import java.net.URL;
 import java.util.*;
 import java.util.regex.Pattern;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.util.Comparator.naturalOrder;
 import static java.util.stream.Collectors.toList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -62,7 +64,9 @@ public class E_IntermediateStreams {
      */
     @Test
     public void e2_listOfAllWords() throws IOException {
-        List<String> output = null; // TODO
+        List<String> output = reader.lines()
+                .flatMap(SPLIT_PATTERN::splitAsStream)
+                .collect(toList());
 
         assertEquals(
                 List.of(
@@ -96,7 +100,12 @@ public class E_IntermediateStreams {
      */
     @Test
     public void e3_longLowerCaseSortedWords() throws IOException {
-        List<String> output = null; // TODO
+        List<String> output = reader.lines()
+                .flatMap(SPLIT_PATTERN::splitAsStream)
+                .filter(s -> s.length() >= 8)
+                .map(String::toLowerCase)
+                .sorted()
+                .collect(toList());
 
         assertEquals(
                 List.of(
@@ -119,7 +128,12 @@ public class E_IntermediateStreams {
      */
     @Test
     public void e4_longLowerCaseReverseSortedWords() throws IOException {
-        List<String> result = null; // TODO
+        List<String> result = reader.lines()
+                .flatMap(SPLIT_PATTERN::splitAsStream)
+                .filter(s -> s.length() >= 8)
+                .map(String::toLowerCase)
+                .sorted(Comparator.reverseOrder())
+                .collect(toList());
 
         assertEquals(
                 List.of(
@@ -141,7 +155,14 @@ public class E_IntermediateStreams {
      */
     @Test
     public void e5_sortedLowerCaseDistinctByLengthThenAlphabetically() throws IOException {
-        List<String> result = null; // TODO
+        Comparator<String> c = Comparator.comparingInt(String::length)
+                .thenComparing(naturalOrder());
+        List<String> result = reader.lines()
+                .flatMap(SPLIT_PATTERN::splitAsStream)
+                .map(String::toLowerCase)
+                .distinct()
+                .sorted(c)
+                .collect(toList());
 
         assertEquals(
                 List.of(
@@ -175,7 +196,10 @@ public class E_IntermediateStreams {
      */
     @Test
     public void e6_bigFactorial() {
-        BigInteger result = BigInteger.ONE; // TODO
+        BigInteger result = IntStream.rangeClosed(2, 21)
+                .mapToObj(n -> BigInteger.valueOf((long) n))
+                .reduce(BigInteger.ONE, BigInteger::multiply);
+
 
         assertEquals(new BigInteger("51090942171709440000"), result);
     }
@@ -198,7 +222,9 @@ public class E_IntermediateStreams {
      */
     @Test
     public void e7_getLastWord() throws IOException {
-        String result = null; // TODO
+        String result = reader.lines()
+                .flatMap(SPLIT_PATTERN::splitAsStream)
+                .reduce("", (a, b) -> b);
 
         assertEquals("thee", result);
     }
@@ -214,11 +240,12 @@ public class E_IntermediateStreams {
     public void e8_selectTheSuperClassesOfArrayList() {
         Class<?> origin = ArrayList.class;
 
-        List<String> result = null; // TODO
+        List<Class<?>> result = Stream.<Class<?>>iterate(origin, Class::getSuperclass)
+                .takeWhile(Objects::nonNull)
+                .collect(toList());
 
-        assertEquals(
-                List.of(ArrayList.class, AbstractList.class, AbstractCollection.class, Object.class),
-                result);
+        List<Class<?>> expected = List.of(ArrayList.class, AbstractList.class, AbstractCollection.class, Object.class);
+        assertEquals(expected, result);
     }
     // Hint:
     // <editor-fold defaultstate="collapsed">
@@ -233,19 +260,19 @@ public class E_IntermediateStreams {
      * Count the length of a stream dropping the first elements on a predicate.
      */
     @Test
+    // TODO: I have no idea what is happening here :(
     public void e9_countTheElementsAfterAPredicate() {
-
         Random rand = new Random(314L);
         Stream<String> stream = Stream.iterate(
                 "",
-                (String s) -> {
+                s -> {
                     final int nextInt = rand.nextInt(10);
                     return (nextInt == 0 && !s.isEmpty()) ? s.substring(0, s.length() - 1) :
                             (nextInt == 8 || nextInt == 9) ? s + "+"
                                     : s;
                 }).limit(100);
 
-        long count = 0L; // TODO
+        long count = stream.dropWhile(s -> s.length() < 3).count();
 
         assertEquals(53, count);
     }
