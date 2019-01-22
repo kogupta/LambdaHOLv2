@@ -1,6 +1,5 @@
 package exercises;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.Serializable;
@@ -40,7 +39,6 @@ public class H_Challenges {
    * ]
    */
   @Test
-  @Ignore
   public void h1_denormalizeMap() {
     Map<Integer, List<String>> input = new HashMap<>();
     input.put(4, Arrays.asList("ibex", "hedgehog", "wombat"));
@@ -105,7 +103,6 @@ public class H_Challenges {
    * over the input, without storing anything in a temporary collection.
    */
   @Test
-  @Ignore
   public void h2_invertMultiMap() {
     Map<String, Set<Integer>> input = new HashMap<>();
     input.put("a", new HashSet<>(Arrays.asList(1, 2)));
@@ -144,7 +141,6 @@ public class H_Challenges {
    * The stream is run in parallel, so the combiner function must be correct.
    */
   @Test
-  @Ignore
   public void h3_selectLongestWordsOnePass() {
     Stream<String> input = Stream.of(
         "alfa", "bravo", "charlie", "delta",
@@ -171,7 +167,6 @@ public class H_Challenges {
    * from Java's Collectors.groupingBy() collector.
    */
   @Test
-  @Ignore
   public void h4_splitCharacterRuns() {
     String input = "aaaaabbccccdeeeeeeaaafff";
 
@@ -192,7 +187,6 @@ public class H_Challenges {
    * the correct result.
    */
   @Test
-  @Ignore
   public void h5_reversingCollector() {
     Stream<String> input =
         IntStream.range(0, 100).mapToObj(String::valueOf).parallel();
@@ -239,7 +233,6 @@ public class H_Challenges {
   // </editor-fold>
 
   @Test
-  @Ignore
   public void h6_majority() {
     int[] array1 = {13, 13, 24, 35, 24, 24, 35, 24, 24};
     int[] array2 = {13, 13, 24, 35, 24, 24, 35, 24};
@@ -283,7 +276,6 @@ public class H_Challenges {
   }
 
   @Test
-  @Ignore
   public void h7_shoemaker() {
     Supplier<Shoe> sup1 = makeShoeSupplier(Shoe::new, 9);
     Supplier<Shoe> sup2 = makeShoeSupplier(Shoe::new, 13);
@@ -308,7 +300,6 @@ public class H_Challenges {
    * and false with the concrete classes.
    */
   @Test
-  @Ignore
   public void h8_mapOfClassesAndInterfaces() {
 
     Class<?> origin = ArrayList.class;
@@ -338,7 +329,6 @@ public class H_Challenges {
    * arrange the result in a Map<Class, ...> with those classes as the keys.
    */
   @Test
-  @Ignore
   public void h9_mapOfMapsOfClassesAndInterfaces() {
 
     List<Class<?>> origin = List.of(ArrayList.class, HashSet.class, LinkedHashSet.class);

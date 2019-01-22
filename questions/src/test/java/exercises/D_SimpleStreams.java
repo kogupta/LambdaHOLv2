@@ -10,9 +10,13 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.util.function.Function.identity;
+import static java.util.stream.Collectors.*;
 import static org.junit.Assert.assertEquals;
 
 /**
@@ -60,7 +64,11 @@ public class D_SimpleStreams {
     List<String> input = List.of(
         "alfa", "bravo", "charlie", "delta", "echo", "foxtrot");
 
-    String result = ""; // TODO
+    String result = input.stream()
+            .skip(2)
+            .limit(3)
+            .map(s -> String.valueOf(s.charAt(1)))
+            .collect(Collectors.joining(","));
 
     assertEquals("h,e,c", result);
   }
@@ -83,7 +91,7 @@ public class D_SimpleStreams {
    */
   @Test
   public void d3_countLinesInFile() throws IOException {
-    long count = 0; // TODO
+    long count = reader.lines().count();
 
     assertEquals(14, count);
   }
@@ -104,7 +112,9 @@ public class D_SimpleStreams {
    */
   @Test
   public void d4_findLengthOfLongestLine() throws IOException {
-    int longestLength = 0; // TODO
+    int longestLength = reader.lines()
+            .mapToInt(String::length)
+            .reduce(0, Math::max); // TODO
 
     assertEquals(53, longestLength);
   }
@@ -130,7 +140,8 @@ public class D_SimpleStreams {
    */
   @Test
   public void d5_findLongestLine() throws IOException {
-    String longest = null; // TODO
+    String longest = reader.lines()
+            .reduce("", (s, s2) -> s.length() > s2.length() ? s : s2);
 
     assertEquals("Feed'st thy light's flame with self-substantial fuel,", longest);
   }
@@ -153,7 +164,10 @@ public class D_SimpleStreams {
     List<String> input = List.of(
         "alfa", "bravo", "charlie", "delta", "echo", "foxtrot", "golf", "hotel");
 
-    List<String> result = null; // TODO
+    List<String> result = input.stream()
+            .collect(groupingBy(String::length, TreeMap::new, mapping(identity(), toList())))
+            .lastEntry()
+            .getValue();
 
     assertEquals(List.of("charlie", "foxtrot"), result);
   }
@@ -171,7 +185,21 @@ public class D_SimpleStreams {
     List<String> input = List.of(
         "alfa", "bravo", "charlie", "delta", "echo", "foxtrot", "golf", "hotel");
 
-    List<String> result = null; // TODO
+    // using `var` trick!
+    List<String> result2 = IntStream.range(0, input.size())
+            .mapToObj(n -> new Object() {
+              final int idx = n;
+              final String s = input.get(n);
+            }).filter(o -> o.s.length() > o.idx)
+            .map(o -> o.s)
+            .collect(toList());
+
+    // a more elegant and CORRECT solution!
+    List<String> result = IntStream.range(0, input.size())
+            .filter(idx -> input.get(idx).length() > idx)
+            .mapToObj(input::get)
+            .collect(toList());
+
 
     assertEquals(List.of("alfa", "bravo", "charlie", "delta", "foxtrot"), result);
   }

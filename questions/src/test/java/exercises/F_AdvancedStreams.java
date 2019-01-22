@@ -2,7 +2,6 @@ package exercises;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.BufferedReader;
@@ -38,7 +37,6 @@ public class F_AdvancedStreams {
    * @throws IOException
    */
   @Test
-  @Ignore
   public void f1_mapLengthToWordList() throws IOException {
     Map<Integer, List<String>> result = null; // TODO
 
@@ -65,7 +63,6 @@ public class F_AdvancedStreams {
    * @throws IOException
    */
   @Test
-  @Ignore
   public void f2_mapLengthToWordCount() throws IOException {
     Map<Integer, Long> result = null; // TODO
 
@@ -102,7 +99,6 @@ public class F_AdvancedStreams {
    * @throws IOException
    */
   @Test
-  @Ignore
   public void f3_wordFrequencies() throws IOException {
     Map<String, Long> result = null; // TODO
 
@@ -142,7 +138,6 @@ public class F_AdvancedStreams {
    * @throws IOException
    */
   @Test
-  @Ignore
   public void f4_nestedMaps() throws IOException {
     Map<String, Map<Integer, List<String>>> result = null; // TODO
 
@@ -173,7 +168,6 @@ public class F_AdvancedStreams {
    * pass over the input.
    */
   @Test
-  @Ignore
   public void f5_separateOddEvenSums() {
     IntStream input = new Random(987523).ints(20, 0, 100);
 
@@ -202,7 +196,6 @@ public class F_AdvancedStreams {
    * correct result.
    */
   @Test
-  @Ignore
   public void f6_insertBeginningAndEnd() {
     Stream<String> input = List.of(
         "a", "b", "c", "d", "e", "f", "g", "h", "i", "j",
@@ -269,7 +262,6 @@ public class F_AdvancedStreams {
   // </editor-fold>
 
   @Test
-  @Ignore
   public void f7_countTotalAndDistinctWords() {
     List<String> allWords = reader.lines()
         .map(String::toLowerCase)

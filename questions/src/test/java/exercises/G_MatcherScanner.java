@@ -1,7 +1,6 @@
 package exercises;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -34,7 +33,6 @@ public class G_MatcherScanner {
    * process the results using a Stream.
    */
   @Test
-  @Ignore
   public void g1_wordsWithApostrophes() {
     Set<String> result = null; // TODO
 
@@ -51,7 +49,6 @@ public class G_MatcherScanner {
    * described above using WORD_PAT.
    */
   @Test
-  @Ignore
   public void g2_wordsWithApostrophes() {
     Set<String> result = null; // TODO
 
@@ -69,7 +66,6 @@ public class G_MatcherScanner {
    * Use the predefined pattern TRIGRAPH_PAT to match vowel trigraphs.
    */
   @Test
-  @Ignore
   public void g3_vowelTrigraphs() {
     final Pattern TRIGRAPH_PAT = Pattern.compile("[aeiou]{3}", Pattern.CASE_INSENSITIVE);
     String result = null; // TODO
@@ -93,7 +89,6 @@ public class G_MatcherScanner {
    * or a Channel, and all the input need not be loaded into memory.)
    */
   @Test
-  @Ignore
   public void g4_firstLongWhitespaceSeparatedToken() {
     String result = null; // TODO
 
