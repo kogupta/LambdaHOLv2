@@ -7,9 +7,12 @@ import org.junit.Test;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.Scanner;
 import java.util.Set;
+import java.util.regex.MatchResult;
 import java.util.regex.Pattern;
 
+import static java.util.stream.Collectors.toSet;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -34,7 +37,10 @@ public class G_MatcherScanner {
    */
   @Test
   public void g1_wordsWithApostrophes() {
-    Set<String> result = null; // TODO
+    Set<String> result = WORD_PAT.matcher(SONNET)
+        .results()
+        .map(MatchResult::group)
+        .collect(toSet());
 
     assertEquals(Set.of("Feed'st", "mak'st"), result);
   }
@@ -50,7 +56,10 @@ public class G_MatcherScanner {
    */
   @Test
   public void g2_wordsWithApostrophes() {
-    Set<String> result = null; // TODO
+    Set<String> result = new Scanner(SONNET)
+        .findAll(WORD_PAT)
+        .map(MatchResult::group)
+        .collect(toSet());
 
     assertEquals(Set.of("Feed'st", "mak'st"), result);
   }
@@ -68,8 +77,12 @@ public class G_MatcherScanner {
   @Test
   public void g3_vowelTrigraphs() {
     final Pattern TRIGRAPH_PAT = Pattern.compile("[aeiou]{3}", Pattern.CASE_INSENSITIVE);
-    String result = null; // TODO
+    System.out.println(SONNET.length());
 
+    String result = TRIGRAPH_PAT.matcher(SONNET)
+        .replaceAll(mr -> "[" + mr.group().toUpperCase() + "]");
+
+    System.out.println(result);
     assertTrue(result.contains("b[EAU]ty's"));
     assertEquals(614, result.length());
   }
@@ -90,7 +103,11 @@ public class G_MatcherScanner {
    */
   @Test
   public void g4_firstLongWhitespaceSeparatedToken() {
-    String result = null; // TODO
+    String result = new Scanner(SONNET)
+        .tokens()
+        .filter(s -> s.length() >= 10)
+        .findFirst()
+        .orElseThrow(AssertionError::new);
 
     assertEquals("contracted", result);
   }

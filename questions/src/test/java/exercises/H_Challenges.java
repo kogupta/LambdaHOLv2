@@ -1,16 +1,21 @@
 package exercises;
 
+import com.google.common.collect.Sets;
 import org.junit.Test;
 
 import java.io.Serializable;
 import java.util.*;
+import java.util.function.BiConsumer;
+import java.util.function.BinaryOperator;
 import java.util.function.IntFunction;
 import java.util.function.Supplier;
 import java.util.stream.Collector;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+import static java.util.stream.Collector.Characteristics.CONCURRENT;
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toMap;
 import static org.junit.Assert.*;
 
 public class H_Challenges {
@@ -47,7 +52,12 @@ public class H_Challenges {
     input.put(10, Arrays.asList("crab", "lobster", "scorpion"));
     input.put(750, Arrays.asList("millipede"));
 
-    List<String> result = null; // TODO
+    List<String> result = input.entrySet().stream()
+        .flatMap(intListEntry -> {
+          int legs = intListEntry.getKey();
+          List<String> animals = intListEntry.getValue();
+          return animals.stream().map(animal -> animal + ":" + legs);
+        }).collect(toList());
 
     assertEquals(13, result.size());
     assertTrue(result.contains("ibex:4"));
@@ -84,7 +94,7 @@ public class H_Challenges {
    * of the values of the result map. In the input map, an item
    * may appear in the value set of multiple keys. In the result
    * map, that item will be a key, and its value set will be
-   * its corresopnding keys from the input map.
+   * its corresponding keys from the input map.
    * <p>
    * In this case the input is Map<String, Set<Integer>>
    * and the result is Map<Integer, Set<String>>.
@@ -112,7 +122,16 @@ public class H_Challenges {
     input.put("e", new HashSet<>(Arrays.asList(2, 4)));
     input.put("f", new HashSet<>(Arrays.asList(3, 4)));
 
-    Map<Integer, Set<String>> result = null; // TODO
+    Map<Integer, Set<String>> result = input.entrySet()
+        .stream()
+        .flatMap(entry -> entry.getValue()
+            .stream()
+            .map(n -> new AbstractMap.SimpleEntry<>(n, entry.getKey())))
+        .collect(toMap(
+            e -> e.getKey(),
+            e -> Sets.newHashSet(e.getValue()),
+            (s1, s2) -> { s1.addAll(s2); return s1;}
+        ));
 
     assertEquals(new HashSet<>(Arrays.asList("a", "c", "d")), result.get(1));
     assertEquals(new HashSet<>(Arrays.asList("a", "b", "e")), result.get(2));
@@ -143,12 +162,42 @@ public class H_Challenges {
   @Test
   public void h3_selectLongestWordsOnePass() {
     Stream<String> input = Stream.of(
+        "aaa", "aaa", "aaa", "aaa",
+        "bbb", "bbb", "bbb", "bbb",
+        "aaa", "aaa", "aaa", "aaa",
+        "bbb", "bbb", "bbb", "bbb",
+        "aaa", "aaa", "aaa", "aaa",
+        "bbb", "bbb", "bbb", "bbb",
+        "aaa", "aaa", "aaa", "aaa",
+        "bbb", "bbb", "bbb", "bbb",
+        "aaa", "aaa", "aaa", "aaa",
+        "bbb", "bbb", "bbb", "bbb",
         "alfa", "bravo", "charlie", "delta",
-        "echo", "foxtrot", "golf", "hotel").parallel();
+        "echo", "foxtrot", "golf", "hotel")
+        .parallel();
 
-    List<String> result = input.collect(
-        Collector.of(null, null, null, null));
-    // TODO implement a collector by replacing the nulls above
+    BiConsumer<List<String>, String> acc = (xs, x) -> {
+      int len = xs.isEmpty() ? 0 : xs.get(0).length();
+
+      if (len < x.length() && len > 0) xs.clear();
+
+      if (len <= x.length()) xs.add(x);
+    };
+
+    BinaryOperator<List<String>> combiner = (xs, ys) -> {
+      int a = xs.isEmpty() ? 0 : xs.get(0).length();
+      int b = ys.isEmpty() ? 0 : ys.get(0).length();
+      if (a < b) return ys;
+      else if (a > b) return xs;
+      else {
+        xs.addAll(ys);
+        return xs;
+      }
+    };
+
+    Collector<String, List<String>, List<String>> collector = Collector.of(
+        ArrayList::new, acc, combiner, CONCURRENT);
+    List<String> result = input.collect(collector);
 
     assertEquals(Arrays.asList("charlie", "foxtrot"), result);
   }
@@ -170,16 +219,89 @@ public class H_Challenges {
   public void h4_splitCharacterRuns() {
     String input = "aaaaabbccccdeeeeeeaaafff";
 
-    List<String> result = null; // TODO
+    // this is a nifty trick
+    // find cumulative boundaries!
+    int[] bounds = IntStream.rangeClosed(0, input.length())
+        .filter(i -> i == 0 || i == input.length() ||
+            input.charAt(i - 1) != input.charAt(i))
+        .toArray();
+    System.out.println(Arrays.toString(bounds));
+
+    IntFunction<String> extract = n -> {
+      int start = bounds[n - 1];
+      int end = bounds[n];
+      return input.substring(start, end);
+    };
+
+    List<String> result = IntStream.range(1, bounds.length)
+        .mapToObj(extract)
+        .collect(toList());
 
     assertEquals("[aaaaa, bb, cccc, d, eeeeee, aaa, fff]", result.toString());
   }
+
+  @Test
+  public void h4_splitCharacterRunsImperative() {
+    String input = "aaaaabbccccdeeeeeeaaafff";
+
+    List<CharCount> cc2 = new ArrayList<>();
+    for (int i = 0; i < input.length(); i++) {
+      char c = input.charAt(i);
+      if (i != 0) {
+        CharCount last = cc2.get(cc2.size() - 1);
+        if (last.c == c) {
+          last.incrCount();
+          continue;
+        }
+      }
+
+      cc2.add(CharCount.of(c));
+    }
+    assertEquals("[[a, 5], [b, 2], [c, 4], [d, 1], [e, 6], [a, 3], [f, 3]]", cc2.toString());
+
+    List<String> result = cc2.stream().map(x -> repeatChar(x.c, x.count)).collect(toList());
+
+    assertEquals("[aaaaa, bb, cccc, d, eeeeee, aaa, fff]", result.toString());
+  }
+
   // Hint:
   // <editor-fold defaultstate="collapsed">
   // One possibility is a two-pass approach: one pass to gather data about
   // the boundaries between the runs, and the second to create the substrings
   // based on output from the first.
   // </editor-fold>
+
+  private static final class CharCount {
+    final char c;
+    int count = 1;
+
+    private CharCount(char c) {this.c = c;}
+
+    CharCount incrCount() {
+      count++;
+      return this;
+    }
+
+    CharCount incrCount(int n) {
+      count += n;
+      return this;
+    }
+
+    @Override
+    public String toString() {
+      return "[" + c + ", " + count + "]";
+    }
+
+    static CharCount of(char c) {
+      return new CharCount(c);
+    }
+  }
+
+  private static String repeatChar(char c, int n) {
+    char[] cs = new char[n];
+    Arrays.fill(cs, c);
+    return new String(cs);
+  }
 
   /**
    * Given a parallel stream of strings, collect them into a collection in reverse order.
@@ -199,7 +321,7 @@ public class H_Challenges {
         IntStream.range(0, 100)
             .map(i -> 99 - i)
             .mapToObj(String::valueOf)
-            .collect(Collectors.toList()),
+            .collect(toList()),
         new ArrayList<>(result));
   }
   // Hint 1:

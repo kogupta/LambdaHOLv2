@@ -12,7 +12,7 @@ import java.math.BigInteger;
 import java.net.URL;
 import java.util.*;
 import java.util.regex.Pattern;
-import java.util.stream.IntStream;
+import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -196,8 +196,8 @@ public class E_IntermediateStreams {
      */
     @Test
     public void e6_bigFactorial() {
-        BigInteger result = IntStream.rangeClosed(2, 21)
-                .mapToObj(n -> BigInteger.valueOf((long) n))
+        BigInteger result = LongStream.rangeClosed(2, 21)
+            .mapToObj(BigInteger::valueOf)
                 .reduce(BigInteger.ONE, BigInteger::multiply);
 
 
