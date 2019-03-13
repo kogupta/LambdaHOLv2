@@ -207,8 +207,8 @@ public class B_Comparators {
     assertTrue(intCompare.applyAsInt(0, 1) < 0);
     assertTrue(intCompare.applyAsInt(1, 1) == 0);
     assertTrue(intCompare.applyAsInt(2, 1) > 0);
-    assertTrue(intCompare.applyAsInt(Integer.MIN_VALUE, Integer.MAX_VALUE) < 0);
-    assertTrue(intCompare.applyAsInt(Integer.MAX_VALUE, Integer.MIN_VALUE) > 0);
+    assertTrue(intCompare.applyAsInt(0x80000000, 0x7fffffff) < 0);
+    assertTrue(intCompare.applyAsInt(0x7fffffff, 0x80000000) > 0);
   }
   // Hint:
   // <editor-fold defaultstate="collapsed">
@@ -230,8 +230,8 @@ public class B_Comparators {
     assertTrue(intCompare.applyAsInt(0, 1) < 0);
     assertTrue(intCompare.applyAsInt(1, 1) == 0);
     assertTrue(intCompare.applyAsInt(2, 1) > 0);
-    assertTrue(intCompare.applyAsInt(Integer.MIN_VALUE, Integer.MAX_VALUE) < 0);
-    assertTrue(intCompare.applyAsInt(Integer.MAX_VALUE, Integer.MIN_VALUE) > 0);
+    assertTrue(intCompare.applyAsInt(0x80000000, 0x7fffffff) < 0);
+    assertTrue(intCompare.applyAsInt(0x7fffffff, 0x80000000) > 0);
   }
   // Hint:
   // <editor-fold defaultstate="collapsed">
